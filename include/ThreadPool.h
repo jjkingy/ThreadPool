@@ -10,6 +10,7 @@
 #include <functional>          // std::function，用于封装任务
 #include <stdexcept>           // 标准异常
 #include <atomic>              // 原子操作，线程安全的变量
+#include <unordered_set>
 
 class ThreadPool {
 public:
@@ -46,24 +47,44 @@ public:
   //状态查询方法
   bool isStopped() const { return stop; }
 
-  
+  //动态调整大小
+  void resize(size_t threads);  
+
+  //暂停线程池
+  void pause();
+
+  //恢复线程池
+  void resume();
+
+  //等待所有任务完成
+  void waitForTasks();
+
+  //清空任务队列
+  void clearTasks();
+
+  size_t getFailedTaskCount() const;
 
 private:
   //线程工作函数 从任务队列中获取任务并执行任务
-  void workerThread();
+  void workerThread(size_t id);
 
+  std::unordered_set<size_t> threadsToStop; //需要停止的线程ID
   std::vector<std::thread> workers; //工作线程容器
   std::queue<std::function<void()>> tasks;  //任务队列
 
   //同步机制
   std::mutex queue_mutex;
   std::condition_variable condition;
+  std::condition_variable waitCondition;
 
   std::atomic<bool> stop{false};
+  std::atomic<bool> paused{false};
 
   //计数器
   std::atomic<size_t> activeThreads{0};
   std::atomic<size_t> completedTasks{0};
+  std::atomic<size_t> failedTasks{0};
+
 };
 
 // 模板函数实现

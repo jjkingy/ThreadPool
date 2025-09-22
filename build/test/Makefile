@@ -217,6 +217,20 @@ test_day4_basic/fast:
 	cd /home/yy/code/C_C++/ThreadPool/build && $(MAKE) $(MAKESILENT) -f test/CMakeFiles/test_day4_basic.dir/build.make test/CMakeFiles/test_day4_basic.dir/build
 .PHONY : test_day4_basic/fast
 
+# Convenience name for target.
+test/CMakeFiles/test_day5_basic.dir/rule:
+	cd /home/yy/code/C_C++/ThreadPool/build && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 test/CMakeFiles/test_day5_basic.dir/rule
+.PHONY : test/CMakeFiles/test_day5_basic.dir/rule
+
+# Convenience name for target.
+test_day5_basic: test/CMakeFiles/test_day5_basic.dir/rule
+.PHONY : test_day5_basic
+
+# fast build rule for target.
+test_day5_basic/fast:
+	cd /home/yy/code/C_C++/ThreadPool/build && $(MAKE) $(MAKESILENT) -f test/CMakeFiles/test_day5_basic.dir/build.make test/CMakeFiles/test_day5_basic.dir/build
+.PHONY : test_day5_basic/fast
+
 test1.o: test1.cpp.o
 .PHONY : test1.o
 
@@ -313,6 +327,30 @@ test4.cpp.s:
 	cd /home/yy/code/C_C++/ThreadPool/build && $(MAKE) $(MAKESILENT) -f test/CMakeFiles/test_day4_basic.dir/build.make test/CMakeFiles/test_day4_basic.dir/test4.cpp.s
 .PHONY : test4.cpp.s
 
+test5.o: test5.cpp.o
+.PHONY : test5.o
+
+# target to build an object file
+test5.cpp.o:
+	cd /home/yy/code/C_C++/ThreadPool/build && $(MAKE) $(MAKESILENT) -f test/CMakeFiles/test_day5_basic.dir/build.make test/CMakeFiles/test_day5_basic.dir/test5.cpp.o
+.PHONY : test5.cpp.o
+
+test5.i: test5.cpp.i
+.PHONY : test5.i
+
+# target to preprocess a source file
+test5.cpp.i:
+	cd /home/yy/code/C_C++/ThreadPool/build && $(MAKE) $(MAKESILENT) -f test/CMakeFiles/test_day5_basic.dir/build.make test/CMakeFiles/test_day5_basic.dir/test5.cpp.i
+.PHONY : test5.cpp.i
+
+test5.s: test5.cpp.s
+.PHONY : test5.s
+
+# target to generate assembly for a file
+test5.cpp.s:
+	cd /home/yy/code/C_C++/ThreadPool/build && $(MAKE) $(MAKESILENT) -f test/CMakeFiles/test_day5_basic.dir/build.make test/CMakeFiles/test_day5_basic.dir/test5.cpp.s
+.PHONY : test5.cpp.s
+
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -329,6 +367,7 @@ help:
 	@echo "... test_day2_basic"
 	@echo "... test_day3_basic"
 	@echo "... test_day4_basic"
+	@echo "... test_day5_basic"
 	@echo "... test1.o"
 	@echo "... test1.i"
 	@echo "... test1.s"
@@ -341,6 +380,9 @@ help:
 	@echo "... test4.o"
 	@echo "... test4.i"
 	@echo "... test4.s"
+	@echo "... test5.o"
+	@echo "... test5.i"
+	@echo "... test5.s"
 .PHONY : help
 
 

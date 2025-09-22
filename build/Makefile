@@ -226,6 +226,19 @@ test_day4_basic/fast:
 	$(MAKE) $(MAKESILENT) -f test/CMakeFiles/test_day4_basic.dir/build.make test/CMakeFiles/test_day4_basic.dir/build
 .PHONY : test_day4_basic/fast
 
+#=============================================================================
+# Target rules for targets named test_day5_basic
+
+# Build rule for target.
+test_day5_basic: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 test_day5_basic
+.PHONY : test_day5_basic
+
+# fast build rule for target.
+test_day5_basic/fast:
+	$(MAKE) $(MAKESILENT) -f test/CMakeFiles/test_day5_basic.dir/build.make test/CMakeFiles/test_day5_basic.dir/build
+.PHONY : test_day5_basic/fast
+
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -242,6 +255,7 @@ help:
 	@echo "... test_day2_basic"
 	@echo "... test_day3_basic"
 	@echo "... test_day4_basic"
+	@echo "... test_day5_basic"
 	@echo "... threadpool"
 .PHONY : help
 

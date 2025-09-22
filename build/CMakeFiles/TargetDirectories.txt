@@ -15,6 +15,7 @@
 /home/yy/code/C_C++/ThreadPool/build/test/CMakeFiles/test_day2_basic.dir
 /home/yy/code/C_C++/ThreadPool/build/test/CMakeFiles/test_day3_basic.dir
 /home/yy/code/C_C++/ThreadPool/build/test/CMakeFiles/test_day4_basic.dir
+/home/yy/code/C_C++/ThreadPool/build/test/CMakeFiles/test_day5_basic.dir
 /home/yy/code/C_C++/ThreadPool/build/test/CMakeFiles/edit_cache.dir
 /home/yy/code/C_C++/ThreadPool/build/test/CMakeFiles/rebuild_cache.dir
 /home/yy/code/C_C++/ThreadPool/build/test/CMakeFiles/list_install_components.dir
