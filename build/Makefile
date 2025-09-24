@@ -175,69 +175,17 @@ threadpool/fast:
 .PHONY : threadpool/fast
 
 #=============================================================================
-# Target rules for targets named test_day1_basic
+# Target rules for targets named test_day6_basic
 
 # Build rule for target.
-test_day1_basic: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 test_day1_basic
-.PHONY : test_day1_basic
+test_day6_basic: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 test_day6_basic
+.PHONY : test_day6_basic
 
 # fast build rule for target.
-test_day1_basic/fast:
-	$(MAKE) $(MAKESILENT) -f test/CMakeFiles/test_day1_basic.dir/build.make test/CMakeFiles/test_day1_basic.dir/build
-.PHONY : test_day1_basic/fast
-
-#=============================================================================
-# Target rules for targets named test_day2_basic
-
-# Build rule for target.
-test_day2_basic: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 test_day2_basic
-.PHONY : test_day2_basic
-
-# fast build rule for target.
-test_day2_basic/fast:
-	$(MAKE) $(MAKESILENT) -f test/CMakeFiles/test_day2_basic.dir/build.make test/CMakeFiles/test_day2_basic.dir/build
-.PHONY : test_day2_basic/fast
-
-#=============================================================================
-# Target rules for targets named test_day3_basic
-
-# Build rule for target.
-test_day3_basic: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 test_day3_basic
-.PHONY : test_day3_basic
-
-# fast build rule for target.
-test_day3_basic/fast:
-	$(MAKE) $(MAKESILENT) -f test/CMakeFiles/test_day3_basic.dir/build.make test/CMakeFiles/test_day3_basic.dir/build
-.PHONY : test_day3_basic/fast
-
-#=============================================================================
-# Target rules for targets named test_day4_basic
-
-# Build rule for target.
-test_day4_basic: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 test_day4_basic
-.PHONY : test_day4_basic
-
-# fast build rule for target.
-test_day4_basic/fast:
-	$(MAKE) $(MAKESILENT) -f test/CMakeFiles/test_day4_basic.dir/build.make test/CMakeFiles/test_day4_basic.dir/build
-.PHONY : test_day4_basic/fast
-
-#=============================================================================
-# Target rules for targets named test_day5_basic
-
-# Build rule for target.
-test_day5_basic: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 test_day5_basic
-.PHONY : test_day5_basic
-
-# fast build rule for target.
-test_day5_basic/fast:
-	$(MAKE) $(MAKESILENT) -f test/CMakeFiles/test_day5_basic.dir/build.make test/CMakeFiles/test_day5_basic.dir/build
-.PHONY : test_day5_basic/fast
+test_day6_basic/fast:
+	$(MAKE) $(MAKESILENT) -f test/CMakeFiles/test_day6_basic.dir/build.make test/CMakeFiles/test_day6_basic.dir/build
+.PHONY : test_day6_basic/fast
 
 # Help Target
 help:
@@ -251,11 +199,7 @@ help:
 	@echo "... install/strip"
 	@echo "... list_install_components"
 	@echo "... rebuild_cache"
-	@echo "... test_day1_basic"
-	@echo "... test_day2_basic"
-	@echo "... test_day3_basic"
-	@echo "... test_day4_basic"
-	@echo "... test_day5_basic"
+	@echo "... test_day6_basic"
 	@echo "... threadpool"
 .PHONY : help
 

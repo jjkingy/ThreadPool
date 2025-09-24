@@ -175,6 +175,54 @@ threadpool/fast:
 	cd /home/yy/code/C_C++/ThreadPool/build && $(MAKE) $(MAKESILENT) -f src/CMakeFiles/threadpool.dir/build.make src/CMakeFiles/threadpool.dir/build
 .PHONY : threadpool/fast
 
+Logger.o: Logger.cpp.o
+.PHONY : Logger.o
+
+# target to build an object file
+Logger.cpp.o:
+	cd /home/yy/code/C_C++/ThreadPool/build && $(MAKE) $(MAKESILENT) -f src/CMakeFiles/threadpool.dir/build.make src/CMakeFiles/threadpool.dir/Logger.cpp.o
+.PHONY : Logger.cpp.o
+
+Logger.i: Logger.cpp.i
+.PHONY : Logger.i
+
+# target to preprocess a source file
+Logger.cpp.i:
+	cd /home/yy/code/C_C++/ThreadPool/build && $(MAKE) $(MAKESILENT) -f src/CMakeFiles/threadpool.dir/build.make src/CMakeFiles/threadpool.dir/Logger.cpp.i
+.PHONY : Logger.cpp.i
+
+Logger.s: Logger.cpp.s
+.PHONY : Logger.s
+
+# target to generate assembly for a file
+Logger.cpp.s:
+	cd /home/yy/code/C_C++/ThreadPool/build && $(MAKE) $(MAKESILENT) -f src/CMakeFiles/threadpool.dir/build.make src/CMakeFiles/threadpool.dir/Logger.cpp.s
+.PHONY : Logger.cpp.s
+
+TaskInfo.o: TaskInfo.cpp.o
+.PHONY : TaskInfo.o
+
+# target to build an object file
+TaskInfo.cpp.o:
+	cd /home/yy/code/C_C++/ThreadPool/build && $(MAKE) $(MAKESILENT) -f src/CMakeFiles/threadpool.dir/build.make src/CMakeFiles/threadpool.dir/TaskInfo.cpp.o
+.PHONY : TaskInfo.cpp.o
+
+TaskInfo.i: TaskInfo.cpp.i
+.PHONY : TaskInfo.i
+
+# target to preprocess a source file
+TaskInfo.cpp.i:
+	cd /home/yy/code/C_C++/ThreadPool/build && $(MAKE) $(MAKESILENT) -f src/CMakeFiles/threadpool.dir/build.make src/CMakeFiles/threadpool.dir/TaskInfo.cpp.i
+.PHONY : TaskInfo.cpp.i
+
+TaskInfo.s: TaskInfo.cpp.s
+.PHONY : TaskInfo.s
+
+# target to generate assembly for a file
+TaskInfo.cpp.s:
+	cd /home/yy/code/C_C++/ThreadPool/build && $(MAKE) $(MAKESILENT) -f src/CMakeFiles/threadpool.dir/build.make src/CMakeFiles/threadpool.dir/TaskInfo.cpp.s
+.PHONY : TaskInfo.cpp.s
+
 ThreadPool.o: ThreadPool.cpp.o
 .PHONY : ThreadPool.o
 
@@ -199,6 +247,30 @@ ThreadPool.cpp.s:
 	cd /home/yy/code/C_C++/ThreadPool/build && $(MAKE) $(MAKESILENT) -f src/CMakeFiles/threadpool.dir/build.make src/CMakeFiles/threadpool.dir/ThreadPool.cpp.s
 .PHONY : ThreadPool.cpp.s
 
+ThreadPoolMetrics.o: ThreadPoolMetrics.cpp.o
+.PHONY : ThreadPoolMetrics.o
+
+# target to build an object file
+ThreadPoolMetrics.cpp.o:
+	cd /home/yy/code/C_C++/ThreadPool/build && $(MAKE) $(MAKESILENT) -f src/CMakeFiles/threadpool.dir/build.make src/CMakeFiles/threadpool.dir/ThreadPoolMetrics.cpp.o
+.PHONY : ThreadPoolMetrics.cpp.o
+
+ThreadPoolMetrics.i: ThreadPoolMetrics.cpp.i
+.PHONY : ThreadPoolMetrics.i
+
+# target to preprocess a source file
+ThreadPoolMetrics.cpp.i:
+	cd /home/yy/code/C_C++/ThreadPool/build && $(MAKE) $(MAKESILENT) -f src/CMakeFiles/threadpool.dir/build.make src/CMakeFiles/threadpool.dir/ThreadPoolMetrics.cpp.i
+.PHONY : ThreadPoolMetrics.cpp.i
+
+ThreadPoolMetrics.s: ThreadPoolMetrics.cpp.s
+.PHONY : ThreadPoolMetrics.s
+
+# target to generate assembly for a file
+ThreadPoolMetrics.cpp.s:
+	cd /home/yy/code/C_C++/ThreadPool/build && $(MAKE) $(MAKESILENT) -f src/CMakeFiles/threadpool.dir/build.make src/CMakeFiles/threadpool.dir/ThreadPoolMetrics.cpp.s
+.PHONY : ThreadPoolMetrics.cpp.s
+
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -212,9 +284,18 @@ help:
 	@echo "... list_install_components"
 	@echo "... rebuild_cache"
 	@echo "... threadpool"
+	@echo "... Logger.o"
+	@echo "... Logger.i"
+	@echo "... Logger.s"
+	@echo "... TaskInfo.o"
+	@echo "... TaskInfo.i"
+	@echo "... TaskInfo.s"
 	@echo "... ThreadPool.o"
 	@echo "... ThreadPool.i"
 	@echo "... ThreadPool.s"
+	@echo "... ThreadPoolMetrics.o"
+	@echo "... ThreadPoolMetrics.i"
+	@echo "... ThreadPoolMetrics.s"
 .PHONY : help
 
 
