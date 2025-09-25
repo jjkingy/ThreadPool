@@ -1,5 +1,8 @@
 # src目录的CMakeLists.txt
 set(SOURCES
+    Logger.cpp
+    TaskInfo.cpp
+    ThreadPoolMetrics.cpp
     ThreadPool.cpp
 )
 

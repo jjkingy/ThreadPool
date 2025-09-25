@@ -1,22 +1,21 @@
 #include "ThreadPool.h"
 #include <iostream>
 
-ThreadPool::ThreadPool(size_t threads) {
-    std::cout << "线程池构造函数被调用，创建线程数: " << threads << std::endl;
+ThreadPool::ThreadPool(size_t threads, LogLevel loglevel, bool consoleLog, const std::string& logFile) 
+    : logger(loglevel, consoleLog, logFile) {
+    logger.log(LogLevel::INFO, "线程池创建,工作线程数 " + std::to_string(threads));
     for(size_t i = 0; i < threads; ++i) {
         workers.emplace_back(
             [this, i]() { this->workerThread(i);});
     }
-
-    std::cout << "所有线程创建完毕" << std::endl;
 }
 
 ThreadPool::~ThreadPool() {
-    std::cout << "线程池析构函数被调用" << std::endl;
-    
+
     {   //设置stop变量为ture
         std::unique_lock<std::mutex> lock(queue_mutex);
         stop = true;
+        logger.log(LogLevel::INFO, "线程池正在关闭...");
     }
 
     condition.notify_all();
@@ -27,16 +26,19 @@ ThreadPool::~ThreadPool() {
         }
     }
 
-    std::cout << "线程池已经析构" << std::endl;
+    logger.log(LogLevel::INFO, "线程池关闭");
 }
 
 //需要检查自己是否能退出
 //现在每一个worker有一个唯一id 便于管理
 void ThreadPool::workerThread(size_t id) {
+    logger.log(LogLevel::DEBUG, "工作线程 " + std::to_string(id) + "启动");
 
     //无限循环运行
     while(true) {
-        std::function<void()> task;
+        // std::function<void()> task;
+        TaskInfo task{nullptr};
+        bool hasTask = false;
 
         //获取任务
         {
@@ -45,41 +47,74 @@ void ThreadPool::workerThread(size_t id) {
             condition.wait(lock, [this, id]() {
                 return this->stop ||    //线程池停止
                     (!this->paused && !this->tasks.empty()) ||    //线程有任务要执行
-                    (this->threadsToStop.find(id) != threadsToStop.end());  //线程池要清理线程
+                    (this->threadsToStop.find(id) != threadsToStop.end());  //线程池要清理该线程
             });
 
             //停止 > 中止 > 有任务
             if(this->stop) {
+                logger.log(LogLevel::DEBUG, "工作线程 " + std::to_string(id) + " 停止(线程池关闭)");
                 return;
             }
 
             if(this->threadsToStop.find(id) != this->threadsToStop.end()) {
                 this->threadsToStop.erase(id);
+                logger.log(LogLevel::DEBUG, "工作线程 " + std::to_string(id) + " 停止（线程池调整大小）");
                 return;
             }
             
+            //优先级队列不支持move操作
             if(!this->tasks.empty() && !this->paused) {
-                task = std::move(tasks.front());
-                tasks.pop();
+                // 优先级队列不支持直接移动元素，需要做一个拷贝
+                task = this->tasks.top();
+                this->tasks.pop();
+                hasTask = true;
+
+                std::string taskDesc = task.taskId.empty() ? "匿名任务" : "任务" + task.taskId;
+                if(!task.description.empty()) {
+                    taskDesc += " (" + task.description + ")";
+                }
+                logger.log(LogLevel::DEBUG, "工作线程" + std::to_string(id) + "开始执行 " + taskDesc);
             }
 
         }
 
         // 执行任务并处理异常
-        if(task) {
-            ++activeThreads;  // 增加活跃线程计数
+        if(task.task && hasTask) {
+            ++metrics.activeThreads;  // 增加活跃线程计数
+            task.status = TaskStatus::RUNNING;
+            metrics.updateActiveThreads(metrics.activeThreads);
+
+            auto startTime = std::chrono::steady_clock::now();
             try {
-                task();
-                ++completedTasks;
+                task.task();
+                task.status = TaskStatus::COMPLETED;
+                ++metrics.completedTasks;
             } catch(const std::exception& e) {
-                std::cerr << "异常发生在任务中: " << e.what() << std::endl;
-                ++failedTasks;
+                task.status = TaskStatus::FAILED;
+                task.errorMessage = e.what();
+                ++metrics.failedTasks;
+                logger.log(LogLevel::ERROR, "任务异常: " + std::string(e.what()));
             } catch(...) {
-                std::cerr << "未知异常发生在任务中" << std::endl;
-                ++failedTasks;
+                task.status = TaskStatus::FAILED;
+                task.errorMessage = "未知异常";
+                metrics.failedTasks++;
+                logger.log(LogLevel::ERROR, "任务发生未知异常");
             }
-            --activeThreads;   // 减少活跃线程计数
+
+            auto endTime = std::chrono::steady_clock::now();
+            auto duration = std::chrono::duration_cast<std::chrono::nanoseconds>(endTime - startTime);
+            metrics.addTaskTime(duration.count());
+
+            --metrics.activeThreads;   // 减少活跃线程计数
             waitCondition.notify_all(); //这里任务完成可能出发waitForAll条件 所以要通知所有等待waitcondition的线程
+
+            //记录日志
+            std::string taskDesc = task.taskId.empty() ? "匿名任务" : "任务 " + task.taskId;
+            std::string statusStr = taskStatusToString(task.status);
+            
+            logger.log(LogLevel::DEBUG,
+                    "工作线程" + std::to_string(id) + " " + statusStr + "" + taskDesc +
+                    "(用时 " + std::to_string(duration.count() / 1000000.0) + "ms");
         }
 
     }
@@ -96,11 +131,11 @@ size_t ThreadPool::getTaskCount() {
 }
 
 size_t ThreadPool::getCompletedTaskCount() const {
-    return completedTasks;
+    return metrics.completedTasks;
 }
 
 size_t ThreadPool::getActiveThreadCount() const {
-    return activeThreads;
+    return metrics.activeThreads;
 }
 
 size_t ThreadPool::getWaitingThreadCount() const {
@@ -178,7 +213,7 @@ void ThreadPool::waitForTasks() {
     std::cout << "等待所有任务完成...." << std::endl;
     waitCondition.wait(lock, [this]() {
         //任务队列空 并且所有正在完成的任务都完成
-        return (tasks.empty() && activeThreads == 0) || stop;
+        return (tasks.empty() && metrics.activeThreads == 0) || stop;
     });
     std::cout << "所有任务已完成" << std::endl;
 }
@@ -189,12 +224,37 @@ void ThreadPool::clearTasks() {
     std::unique_lock<std::mutex> lock(queue_mutex);
     size_t taskCount = tasks.size();
 
-    std::queue<std::function<void()>> emptyQueue;
+    //清空任务队列和ID映射表
+    std::priority_queue<TaskInfo> emptyQueue;
     std::swap(tasks, emptyQueue);
+    taskIdMap.clear();
 
-    std::cout << "清空任务队列: " << taskCount << " 个任务被移除" << std::endl;
+    logger.log(LogLevel::INFO, "清空任务队列: " + std::to_string(taskCount) + " 个任务被移除");
 }
 
 size_t ThreadPool::getFailedTaskCount() const {
-    return failedTasks;
+    return metrics.failedTasks;
+}
+
+// 获取性能报告
+std::string ThreadPool::getMetricsReport() const {
+    return metrics.getReport();
+}
+
+// 设置日志级别
+void ThreadPool::setLogLevel(LogLevel level) {
+    logger.setLevel(level);
+}
+
+// 记录任务提交日志
+void ThreadPool::logTaskSubmission(const std::string& taskId, const std::string& description,
+                                   TaskPriority priority) {
+    std::string priorityStr = priorityToString(priority);
+    
+    if (!taskId.empty() || !description.empty()) {
+        logger.log(LogLevel::DEBUG, "提交任务 " + taskId + " (" + description + 
+                   ") 优先级: " + priorityStr);
+    } else {
+        logger.log(LogLevel::DEBUG, "提交" + priorityStr + "优先级任务");
+    }
 }
