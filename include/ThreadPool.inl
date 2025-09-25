@@ -82,10 +82,17 @@ auto ThreadPool::enqueueWithInfo(std::string taskId, std::string description,
     //记录任务提交日志
     logTaskSubmission(taskId, description, priority);
 
-    tasks.emplace(std::move(taskFunction), priority, taskId, description);
+    auto taskInfoPtr = std::make_shared<TaskInfo>(
+      std::move(taskFunction),
+      priority,
+      taskId,
+      description
+    );
+    //把唯一任务的共享指针添加到map里面
     if(!taskId.empty()) {
-      taskIdMap[taskId] = tasks.size();
+      taskIdMap[taskId] = taskInfoPtr;
     }
+    tasks.push(*taskInfoPtr);
 
     //更新性能指标
     metrics.totalTasks++;

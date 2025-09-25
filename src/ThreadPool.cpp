@@ -37,7 +37,8 @@ void ThreadPool::workerThread(size_t id) {
     //无限循环运行
     while(true) {
         // std::function<void()> task;
-        TaskInfo task{nullptr};
+        // TaskInfo task{nullptr};
+        std::shared_ptr<TaskInfo> taskPtr = nullptr;
         bool hasTask = false;
 
         //获取任务
@@ -63,40 +64,56 @@ void ThreadPool::workerThread(size_t id) {
             }
             
             //优先级队列不支持move操作
-            if(!this->tasks.empty() && !this->paused) {
-                // 优先级队列不支持直接移动元素，需要做一个拷贝
-                task = this->tasks.top();
+            //CANCLED只能处理记录taskId的任务 
+            //因为需要跳过CANCLED任务 所以这里要不断循环直到成功获取任务(不然只执行一次就睡太浪费了)
+            while(!this->tasks.empty() && !this->paused) {
+                TaskInfo task = this->tasks.top();
                 this->tasks.pop();
-                hasTask = true;
 
-                std::string taskDesc = task.taskId.empty() ? "匿名任务" : "任务" + task.taskId;
-                if(!task.description.empty()) {
-                    taskDesc += " (" + task.description + ")";
+                if(!task.taskId.empty()) {
+                    auto it = taskIdMap.find(task.taskId);
+                    if(it != taskIdMap.end()) {
+                        taskPtr = it->second;
+                        if(taskPtr->status == TaskStatus::CANCELED) {
+                            logger.log(LogLevel::DEBUG, "跳过已经取消的任务 " + task.taskId);
+                            continue;   //继续尝试获取下一个任务
+                        }
+                    } 
+                } else {
+                    taskPtr = std::make_shared<TaskInfo>(task);
                 }
-                logger.log(LogLevel::DEBUG, "工作线程" + std::to_string(id) + "开始执行 " + taskDesc);
+                hasTask = true;
+                break;
             }
 
+            if(hasTask && taskPtr) {
+                std::string taskDesc = taskPtr->taskId.empty() ? "匿名任务" : "任务" + taskPtr->taskId;
+                if(!taskPtr->description.empty()) {
+                    taskDesc += " (" + taskPtr->description + ")";
+                }
+                logger.log(LogLevel::DEBUG, "工作线程" + std::to_string(id) + "开始执行 " + taskDesc);                   
+            }
         }
 
         // 执行任务并处理异常
-        if(task.task && hasTask) {
+        if(hasTask && taskPtr && taskPtr->task) {
             ++metrics.activeThreads;  // 增加活跃线程计数
-            task.status = TaskStatus::RUNNING;
+            taskPtr->status = TaskStatus::RUNNING;
             metrics.updateActiveThreads(metrics.activeThreads);
 
             auto startTime = std::chrono::steady_clock::now();
             try {
-                task.task();
-                task.status = TaskStatus::COMPLETED;
+                taskPtr->task();
+                taskPtr->status = TaskStatus::COMPLETED;
                 ++metrics.completedTasks;
             } catch(const std::exception& e) {
-                task.status = TaskStatus::FAILED;
-                task.errorMessage = e.what();
+                taskPtr->status = TaskStatus::FAILED;
+                taskPtr->errorMessage = e.what();
                 ++metrics.failedTasks;
                 logger.log(LogLevel::ERROR, "任务异常: " + std::string(e.what()));
             } catch(...) {
-                task.status = TaskStatus::FAILED;
-                task.errorMessage = "未知异常";
+                taskPtr->status = TaskStatus::FAILED;
+                taskPtr->errorMessage = "未知异常";
                 metrics.failedTasks++;
                 logger.log(LogLevel::ERROR, "任务发生未知异常");
             }
@@ -106,11 +123,18 @@ void ThreadPool::workerThread(size_t id) {
             metrics.addTaskTime(duration.count());
 
             --metrics.activeThreads;   // 减少活跃线程计数
+            //这里任务已经执行完了 从taskIdMap中移除任务
+            {
+                std::lock_guard<std::mutex> lock(queue_mutex);
+                if(!taskPtr->taskId.empty()) {
+                    taskIdMap.erase(taskPtr->taskId);
+                }
+            }
             waitCondition.notify_all(); //这里任务完成可能出发waitForAll条件 所以要通知所有等待waitcondition的线程
 
             //记录日志
-            std::string taskDesc = task.taskId.empty() ? "匿名任务" : "任务 " + task.taskId;
-            std::string statusStr = taskStatusToString(task.status);
+            std::string taskDesc = taskPtr->taskId.empty() ? "匿名任务" : "任务 " + taskPtr->taskId;
+            std::string statusStr = taskStatusToString(taskPtr->status);
             
             logger.log(LogLevel::DEBUG,
                     "工作线程" + std::to_string(id) + " " + statusStr + "" + taskDesc +
@@ -258,3 +282,44 @@ void ThreadPool::logTaskSubmission(const std::string& taskId, const std::string&
         logger.log(LogLevel::DEBUG, "提交" + priorityStr + "优先级任务");
     }
 }
+
+//只能取消等待中的任务
+bool ThreadPool::cancleTask(const std::string& taskId) {
+    std::unique_lock<std::mutex> lock(queue_mutex);
+
+    auto it = taskIdMap.find(taskId);
+    if(it == taskIdMap.end()) {
+        logger.log(LogLevel::ERROR, "尝试取消不存在的任务 " + taskId);
+        return false;
+    }
+
+    auto& taskInfoPtr = it->second;
+    if(taskInfoPtr->status == TaskStatus::RUNNING) {
+        logger.log(LogLevel::ERROR, "无法取消正在执行的任务 " + taskId);
+        return false;
+    }
+    if(taskInfoPtr->status == TaskStatus::COMPLETED ||
+        taskInfoPtr->status == TaskStatus::CANCELED ||
+        taskInfoPtr->status == TaskStatus::FAILED) {
+        logger.log(LogLevel::ERROR, "任务 " + taskId + " 已经终止: " + 
+                    taskStatusToString(taskInfoPtr->status));
+        return false;
+    }
+
+    taskInfoPtr->status = TaskStatus::CANCELED;
+    logger.log(LogLevel::INFO, "成功取消任务 " + taskId);
+    //不会直接从工作队列中移除 只更新状态
+    //worker遇到CANCLED状态任务会直接跳过
+    return true;
+}
+
+// std::string taskStatusToString(TaskStatus status) {
+//     switch (status) {
+//         case TaskStatus::WAITING:   return "等待中";
+//         case TaskStatus::RUNNING:   return "正在执行";
+//         case TaskStatus::COMPLETED: return "已完成";
+//         case TaskStatus::FAILED:    return "失败";
+//         case TaskStatus::CANCELED:  return "已取消";
+//         default:                    return "未知状态";
+//     }
+// }

@@ -44,7 +44,7 @@ public:
   
   // 带ID和描述得任务提交
   template<class F, class... Args>
-  auto enqueueWithInfo(std::string TaskId, std::string description,
+  auto enqueueWithInfo(std::string taskId, std::string description,
                       TaskPriority priority, F&& f, Args&&... args)
     -> std::future<typename std::invoke_result<F, Args...>::type>;
 
@@ -64,6 +64,8 @@ public:
   size_t getCompletedTaskCount() const;
 
   size_t getFailedTaskCount() const;
+
+  bool cancleTask(const std::string& taskId);
   
   //状态查询方法
   bool isStopped() const { return stop; }
@@ -105,7 +107,7 @@ private:
                         TaskPriority priority);
 
   std::unordered_set<size_t> threadsToStop; //需要停止的线程ID
-  std::unordered_map<std::string, size_t> taskIdMap;  //任务映射表
+  std::unordered_map<std::string, std::shared_ptr<TaskInfo>> taskIdMap;  //任务映射表
   std::vector<std::thread> workers; //工作线程容器
   std::priority_queue<TaskInfo> tasks;  //任务队列
 
