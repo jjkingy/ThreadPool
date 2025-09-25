@@ -175,17 +175,17 @@ threadpool/fast:
 .PHONY : threadpool/fast
 
 #=============================================================================
-# Target rules for targets named test_day6_basic
+# Target rules for targets named test_day7_basic
 
 # Build rule for target.
-test_day6_basic: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 test_day6_basic
-.PHONY : test_day6_basic
+test_day7_basic: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 test_day7_basic
+.PHONY : test_day7_basic
 
 # fast build rule for target.
-test_day6_basic/fast:
-	$(MAKE) $(MAKESILENT) -f test/CMakeFiles/test_day6_basic.dir/build.make test/CMakeFiles/test_day6_basic.dir/build
-.PHONY : test_day6_basic/fast
+test_day7_basic/fast:
+	$(MAKE) $(MAKESILENT) -f test/CMakeFiles/test_day7_basic.dir/build.make test/CMakeFiles/test_day7_basic.dir/build
+.PHONY : test_day7_basic/fast
 
 # Help Target
 help:
@@ -199,7 +199,7 @@ help:
 	@echo "... install/strip"
 	@echo "... list_install_components"
 	@echo "... rebuild_cache"
-	@echo "... test_day6_basic"
+	@echo "... test_day7_basic"
 	@echo "... threadpool"
 .PHONY : help
 

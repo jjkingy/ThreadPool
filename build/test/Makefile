@@ -162,42 +162,42 @@ depend:
 .PHONY : depend
 
 # Convenience name for target.
-test/CMakeFiles/test_day6_basic.dir/rule:
-	cd /home/yy/code/C_C++/ThreadPool/build && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 test/CMakeFiles/test_day6_basic.dir/rule
-.PHONY : test/CMakeFiles/test_day6_basic.dir/rule
+test/CMakeFiles/test_day7_basic.dir/rule:
+	cd /home/yy/code/C_C++/ThreadPool/build && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 test/CMakeFiles/test_day7_basic.dir/rule
+.PHONY : test/CMakeFiles/test_day7_basic.dir/rule
 
 # Convenience name for target.
-test_day6_basic: test/CMakeFiles/test_day6_basic.dir/rule
-.PHONY : test_day6_basic
+test_day7_basic: test/CMakeFiles/test_day7_basic.dir/rule
+.PHONY : test_day7_basic
 
 # fast build rule for target.
-test_day6_basic/fast:
-	cd /home/yy/code/C_C++/ThreadPool/build && $(MAKE) $(MAKESILENT) -f test/CMakeFiles/test_day6_basic.dir/build.make test/CMakeFiles/test_day6_basic.dir/build
-.PHONY : test_day6_basic/fast
+test_day7_basic/fast:
+	cd /home/yy/code/C_C++/ThreadPool/build && $(MAKE) $(MAKESILENT) -f test/CMakeFiles/test_day7_basic.dir/build.make test/CMakeFiles/test_day7_basic.dir/build
+.PHONY : test_day7_basic/fast
 
-test6.o: test6.cpp.o
-.PHONY : test6.o
+test7.o: test7.cpp.o
+.PHONY : test7.o
 
 # target to build an object file
-test6.cpp.o:
-	cd /home/yy/code/C_C++/ThreadPool/build && $(MAKE) $(MAKESILENT) -f test/CMakeFiles/test_day6_basic.dir/build.make test/CMakeFiles/test_day6_basic.dir/test6.cpp.o
-.PHONY : test6.cpp.o
+test7.cpp.o:
+	cd /home/yy/code/C_C++/ThreadPool/build && $(MAKE) $(MAKESILENT) -f test/CMakeFiles/test_day7_basic.dir/build.make test/CMakeFiles/test_day7_basic.dir/test7.cpp.o
+.PHONY : test7.cpp.o
 
-test6.i: test6.cpp.i
-.PHONY : test6.i
+test7.i: test7.cpp.i
+.PHONY : test7.i
 
 # target to preprocess a source file
-test6.cpp.i:
-	cd /home/yy/code/C_C++/ThreadPool/build && $(MAKE) $(MAKESILENT) -f test/CMakeFiles/test_day6_basic.dir/build.make test/CMakeFiles/test_day6_basic.dir/test6.cpp.i
-.PHONY : test6.cpp.i
+test7.cpp.i:
+	cd /home/yy/code/C_C++/ThreadPool/build && $(MAKE) $(MAKESILENT) -f test/CMakeFiles/test_day7_basic.dir/build.make test/CMakeFiles/test_day7_basic.dir/test7.cpp.i
+.PHONY : test7.cpp.i
 
-test6.s: test6.cpp.s
-.PHONY : test6.s
+test7.s: test7.cpp.s
+.PHONY : test7.s
 
 # target to generate assembly for a file
-test6.cpp.s:
-	cd /home/yy/code/C_C++/ThreadPool/build && $(MAKE) $(MAKESILENT) -f test/CMakeFiles/test_day6_basic.dir/build.make test/CMakeFiles/test_day6_basic.dir/test6.cpp.s
-.PHONY : test6.cpp.s
+test7.cpp.s:
+	cd /home/yy/code/C_C++/ThreadPool/build && $(MAKE) $(MAKESILENT) -f test/CMakeFiles/test_day7_basic.dir/build.make test/CMakeFiles/test_day7_basic.dir/test7.cpp.s
+.PHONY : test7.cpp.s
 
 # Help Target
 help:
@@ -211,10 +211,10 @@ help:
 	@echo "... install/strip"
 	@echo "... list_install_components"
 	@echo "... rebuild_cache"
-	@echo "... test_day6_basic"
-	@echo "... test6.o"
-	@echo "... test6.i"
-	@echo "... test6.s"
+	@echo "... test_day7_basic"
+	@echo "... test7.o"
+	@echo "... test7.i"
+	@echo "... test7.s"
 .PHONY : help
 
 
