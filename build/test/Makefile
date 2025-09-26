@@ -175,6 +175,20 @@ test_day7_basic/fast:
 	cd /home/yy/code/C_C++/ThreadPool/build && $(MAKE) $(MAKESILENT) -f test/CMakeFiles/test_day7_basic.dir/build.make test/CMakeFiles/test_day7_basic.dir/build
 .PHONY : test_day7_basic/fast
 
+# Convenience name for target.
+test/CMakeFiles/test_day8_basic.dir/rule:
+	cd /home/yy/code/C_C++/ThreadPool/build && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 test/CMakeFiles/test_day8_basic.dir/rule
+.PHONY : test/CMakeFiles/test_day8_basic.dir/rule
+
+# Convenience name for target.
+test_day8_basic: test/CMakeFiles/test_day8_basic.dir/rule
+.PHONY : test_day8_basic
+
+# fast build rule for target.
+test_day8_basic/fast:
+	cd /home/yy/code/C_C++/ThreadPool/build && $(MAKE) $(MAKESILENT) -f test/CMakeFiles/test_day8_basic.dir/build.make test/CMakeFiles/test_day8_basic.dir/build
+.PHONY : test_day8_basic/fast
+
 test7.o: test7.cpp.o
 .PHONY : test7.o
 
@@ -199,6 +213,30 @@ test7.cpp.s:
 	cd /home/yy/code/C_C++/ThreadPool/build && $(MAKE) $(MAKESILENT) -f test/CMakeFiles/test_day7_basic.dir/build.make test/CMakeFiles/test_day7_basic.dir/test7.cpp.s
 .PHONY : test7.cpp.s
 
+test8.o: test8.cpp.o
+.PHONY : test8.o
+
+# target to build an object file
+test8.cpp.o:
+	cd /home/yy/code/C_C++/ThreadPool/build && $(MAKE) $(MAKESILENT) -f test/CMakeFiles/test_day8_basic.dir/build.make test/CMakeFiles/test_day8_basic.dir/test8.cpp.o
+.PHONY : test8.cpp.o
+
+test8.i: test8.cpp.i
+.PHONY : test8.i
+
+# target to preprocess a source file
+test8.cpp.i:
+	cd /home/yy/code/C_C++/ThreadPool/build && $(MAKE) $(MAKESILENT) -f test/CMakeFiles/test_day8_basic.dir/build.make test/CMakeFiles/test_day8_basic.dir/test8.cpp.i
+.PHONY : test8.cpp.i
+
+test8.s: test8.cpp.s
+.PHONY : test8.s
+
+# target to generate assembly for a file
+test8.cpp.s:
+	cd /home/yy/code/C_C++/ThreadPool/build && $(MAKE) $(MAKESILENT) -f test/CMakeFiles/test_day8_basic.dir/build.make test/CMakeFiles/test_day8_basic.dir/test8.cpp.s
+.PHONY : test8.cpp.s
+
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -212,9 +250,13 @@ help:
 	@echo "... list_install_components"
 	@echo "... rebuild_cache"
 	@echo "... test_day7_basic"
+	@echo "... test_day8_basic"
 	@echo "... test7.o"
 	@echo "... test7.i"
 	@echo "... test7.s"
+	@echo "... test8.o"
+	@echo "... test8.i"
+	@echo "... test8.s"
 .PHONY : help
 
 

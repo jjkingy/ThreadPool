@@ -97,6 +97,7 @@ src/clean: src/CMakeFiles/threadpool.dir/clean
 
 # Recursive "all" directory target.
 test/all: test/CMakeFiles/test_day7_basic.dir/all
+test/all: test/CMakeFiles/test_day8_basic.dir/all
 .PHONY : test/all
 
 # Recursive "preinstall" directory target.
@@ -105,6 +106,7 @@ test/preinstall:
 
 # Recursive "clean" directory target.
 test/clean: test/CMakeFiles/test_day7_basic.dir/clean
+test/clean: test/CMakeFiles/test_day8_basic.dir/clean
 .PHONY : test/clean
 
 #=============================================================================
@@ -114,7 +116,7 @@ test/clean: test/CMakeFiles/test_day7_basic.dir/clean
 src/CMakeFiles/threadpool.dir/all:
 	$(MAKE) $(MAKESILENT) -f src/CMakeFiles/threadpool.dir/build.make src/CMakeFiles/threadpool.dir/depend
 	$(MAKE) $(MAKESILENT) -f src/CMakeFiles/threadpool.dir/build.make src/CMakeFiles/threadpool.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/yy/code/C_C++/ThreadPool/build/CMakeFiles --progress-num=3,4,5,6,7 "Built target threadpool"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/yy/code/C_C++/ThreadPool/build/CMakeFiles --progress-num=5,6,7,8,9 "Built target threadpool"
 .PHONY : src/CMakeFiles/threadpool.dir/all
 
 # Build rule for subdir invocation for target.
@@ -158,6 +160,32 @@ test_day7_basic: test/CMakeFiles/test_day7_basic.dir/rule
 test/CMakeFiles/test_day7_basic.dir/clean:
 	$(MAKE) $(MAKESILENT) -f test/CMakeFiles/test_day7_basic.dir/build.make test/CMakeFiles/test_day7_basic.dir/clean
 .PHONY : test/CMakeFiles/test_day7_basic.dir/clean
+
+#=============================================================================
+# Target rules for target test/CMakeFiles/test_day8_basic.dir
+
+# All Build rule for target.
+test/CMakeFiles/test_day8_basic.dir/all: src/CMakeFiles/threadpool.dir/all
+	$(MAKE) $(MAKESILENT) -f test/CMakeFiles/test_day8_basic.dir/build.make test/CMakeFiles/test_day8_basic.dir/depend
+	$(MAKE) $(MAKESILENT) -f test/CMakeFiles/test_day8_basic.dir/build.make test/CMakeFiles/test_day8_basic.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/yy/code/C_C++/ThreadPool/build/CMakeFiles --progress-num=3,4 "Built target test_day8_basic"
+.PHONY : test/CMakeFiles/test_day8_basic.dir/all
+
+# Build rule for subdir invocation for target.
+test/CMakeFiles/test_day8_basic.dir/rule: cmake_check_build_system
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/yy/code/C_C++/ThreadPool/build/CMakeFiles 7
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 test/CMakeFiles/test_day8_basic.dir/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/yy/code/C_C++/ThreadPool/build/CMakeFiles 0
+.PHONY : test/CMakeFiles/test_day8_basic.dir/rule
+
+# Convenience name for target.
+test_day8_basic: test/CMakeFiles/test_day8_basic.dir/rule
+.PHONY : test_day8_basic
+
+# clean rule for target.
+test/CMakeFiles/test_day8_basic.dir/clean:
+	$(MAKE) $(MAKESILENT) -f test/CMakeFiles/test_day8_basic.dir/build.make test/CMakeFiles/test_day8_basic.dir/clean
+.PHONY : test/CMakeFiles/test_day8_basic.dir/clean
 
 #=============================================================================
 # Special targets to cleanup operation of make.
