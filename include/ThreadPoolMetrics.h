@@ -13,6 +13,7 @@ struct ThreadPoolMetrics {
   std::atomic<size_t> activeThreads{ 0 };        // 活跃线程数
   std::atomic<size_t> peakThreads{ 0 };          // 峰值线程数
   std::atomic<size_t> peakQueueSize{ 0 };        // 峰值队列大小
+  std::atomic<size_t> timeOutTasks{ 0 };
   std::chrono::steady_clock::time_point startTime;  // 线程池启动时间
   std::atomic<uint64_t> totalTaskTimeNs{ 0 };    // 总任务执行时间（纳秒）
 

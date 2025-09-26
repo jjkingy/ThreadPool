@@ -39,14 +39,37 @@ public:
 
   // 带优先级的任务提交
   template<class F, class... Args>
-  auto enqueueWithPriority(TaskPriority priority, F&& f, Args&&... args)
+  auto enqueueWithPriority(TaskPriority priority, std::chrono::milliseconds timeout,
+                          F&& f, Args&&... args)
     -> std::future<typename std::invoke_result<F, Args...>::type>;
   
   // 带ID和描述得任务提交
   template<class F, class... Args>
   auto enqueueWithInfo(std::string taskId, std::string description,
-                      TaskPriority priority, F&& f, Args&&... args)
+                      TaskPriority priority, std::chrono::milliseconds timeout,
+                      F&& f, Args&&... args)
     -> std::future<typename std::invoke_result<F, Args...>::type>;
+
+  // 批量提交任务（可选超时参数）
+  template<class F>
+  std::vector<std::future<void>> enqueueMany(const std::vector<F>& tasks,
+                                            TaskPriority priority = TaskPriority::MEDIUM,
+                                            std::chrono::milliseconds timeout = std::chrono::milliseconds(0));
+
+  // 带任务ID前缀的批量提交任务（可选超时参数）
+  template<class F>
+  std::vector<std::future<void>> enqueueManyWithIdPrefix(const std::string& idPrefix,
+                                                        const std::string& descriptionPrefix,
+                                                        const std::vector<F>& tasks,
+                                                        TaskPriority priority = TaskPriority::MEDIUM,
+                                                        std::chrono::milliseconds timeout = std::chrono::milliseconds(0));
+
+  // 设置最大线程数
+  void setMaxThreads(size_t max);
+
+  // 获取最大线程数
+  size_t getMaxThreads() const;
+
 
   // 获取工作线程数量
   size_t getThreadCount() const;
@@ -65,7 +88,7 @@ public:
 
   size_t getFailedTaskCount() const;
 
-  bool cancleTask(const std::string& taskId);
+  bool cancelTask(const std::string& taskId);
   
   //状态查询方法
   bool isStopped() const { return stop; }
@@ -85,6 +108,12 @@ public:
   //清空任务队列
   void clearTasks();
 
+  // 获取任务状态
+  TaskStatus getTaskStatus(const std::string& taskId);
+
+  // 获取任务状态字符串
+  std::string getTaskStatusString(const std::string& taskId);
+
 
   // 获取性能报告
   std::string getMetricsReport() const;
@@ -95,12 +124,32 @@ public:
 private:
   //线程工作函数 从任务队列中获取任务并执行任务
   void workerThread(size_t id);
+  // 工作线程功能
+  TaskFetchResult getNextTask(size_t id, std::shared_ptr<TaskInfo>& taskPtr);
+  void executeTask(size_t id, std::shared_ptr<TaskInfo> taskPtr);
+  // void executeTaskWithTimeout(std::shared_ptr<TaskInfo> taskPtr, bool& isTimeout);
 
-  // 创建任务函数
+  // void handleTaskException(std::shared_ptr<TaskInfo> taskPtr, const std::string& errorMessage, bool isTimeout);
+  void cleanupTask(std::shared_ptr<TaskInfo> taskPtr);
+  void logTaskCompletion(size_t id, std::shared_ptr<TaskInfo> taskPtr, const std::chrono::nanoseconds& duration);
+
+    
+  // 创建带超时处理的任务函数
   template<class F, class... Args>
-  auto createTaskFunction(std::shared_ptr<std::promise<typename std::invoke_result<F, Args...>::type>> promise,
-                          F&& f, Args&&... args)
-    ->std::function<void()>;                      
+  auto createTaskWithTimeoutHandling(
+      std::shared_ptr<std::promise<typename std::invoke_result<F, Args...>::type>> promise,
+      std::chrono::milliseconds timeout,
+      F&& f, Args&&... args) -> std::function<void()>;
+
+  // 创建普通任务函数（无超时）
+  template<class F, class... Args>
+  auto createSimpleTask(
+      std::shared_ptr<std::promise<typename std::invoke_result<F, Args...>::type>> promise,
+      F&& f, Args&&... args) -> std::function<void()>;
+
+  // 处理任务异常并更新状态（新增，用于内部调用）
+  void recordTaskFailure(const std::string& errorMessage, bool isTimeout);  
+
 
   // 记录任务提交日志
   void logTaskSubmission(const std::string& taskId, const std::string& description,
@@ -118,6 +167,7 @@ private:
 
   std::atomic<bool> stop{false};
   std::atomic<bool> paused{false};
+  size_t maxThreads;  // 最大线程数限制
 
   Logger logger;
   ThreadPoolMetrics metrics;
